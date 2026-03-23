@@ -1,0 +1,11 @@
+export default function RiderOffersPage() {
+  return (
+    <div className="space-y-6 w-full max-w-full overflow-x-hidden">
+      <div className="w-full">
+      </div>
+      <div className="rounded-lg border border-gray-200 bg-white p-6">
+        <p className="text-gray-500">Offer participation functionality coming soon...</p>
+      </div>
+    </div>
+  );
+}
