@@ -3,8 +3,9 @@ import path from "path";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  // Use dashboard as the workspace root for file tracing (avoids multiple-lockfile warning in monorepo)
+  // Keep tracing inside dashboard so this repo is fully standalone
   outputFileTracingRoot: path.join(process.cwd()),
+  transpilePackages: ["@gatimitra/contracts"],
   // Disable dev indicator ("• Rendering..." / "Compiling...") at bottom-left to avoid delay and visual noise
   devIndicators: false,
   // Image optimization: allow quality 75 (default) and 95 for crisp logos/hero images

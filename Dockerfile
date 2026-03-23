@@ -6,6 +6,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json package-lock.json ./
+COPY packages/contracts/package.json ./packages/contracts/
 RUN npm ci
 
 FROM base AS builder
@@ -16,7 +17,6 @@ RUN mkdir -p public
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# NEXT_PUBLIC_* are inlined at build time — pass via: docker build --build-arg NEXT_PUBLIC_*=...
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG NEXT_PUBLIC_APP_URL
