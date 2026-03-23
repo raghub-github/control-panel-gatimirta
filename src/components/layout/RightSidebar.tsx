@@ -225,7 +225,7 @@ export function RightSidebar({ isOpen, onToggle, filterSidebarOpen }: RightSideb
         }}
       >
         {/* Sidebar Header - compact */}
-        <div className="flex h-12 sm:h-14 items-center justify-between border-b border-gray-300/30 px-2 shrink-0">
+        <div className="flex h-10 items-center justify-between border-b border-gray-300/30 px-2 shrink-0">
           {isOpen ? (
             <div className="flex items-center justify-between flex-1 min-w-0 gap-2">
               <div className="flex items-center space-x-2 flex-1 min-w-0">
@@ -263,7 +263,7 @@ export function RightSidebar({ isOpen, onToggle, filterSidebarOpen }: RightSideb
             /* Tickets collapsed: no duplicate icons, empty content */
             <div className="flex-1 min-h-0" />
           ) : (
-            <nav className="flex-1 space-y-2 overflow-y-auto px-2 py-3">
+            <nav className="flex-1 space-y-1.5 overflow-y-auto px-2 py-2">
               {(() => {
                 // Wallet & Earnings sub-pages (wallet-history, earnings) should highlight "Wallet & Earnings", not Rider Information
                 const isWalletOrEarningsPath =

@@ -18,6 +18,8 @@ import { validateUserForLogin } from "@/lib/auth/user-validation";
 import { recordFailedLogin, recordLogin } from "@/lib/auth/user-management";
 import { getIpAddress, getUserAgent } from "@/lib/audit/logger";
 
+export const runtime = "nodejs";
+
 export async function POST(request: NextRequest) {
   try {
     let body: { access_token?: string; refresh_token?: string };
@@ -38,12 +40,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Server auth is not configured. Missing NEXT_PUBLIC_SUPABASE_URL and/or NEXT_PUBLIC_SUPABASE_ANON_KEY in deployment environment.",
+          code: "MISSING_SUPABASE_ENV",
+        },
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     const cookieStore = await cookies();
     const response = NextResponse.json({ success: true });
 
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseUrl,
+      supabaseAnonKey,
       {
         cookies: {
           getAll() {

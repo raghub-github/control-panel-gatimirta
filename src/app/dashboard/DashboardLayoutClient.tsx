@@ -509,7 +509,7 @@ function DashboardLayoutContent({
                       }}
                       aria-label="Filters"
                     >
-                      <div className="flex h-12 sm:h-14 items-center justify-between border-b border-gray-300/30 px-3 shrink-0 bg-white/50 rounded-tl-xl">
+                      <div className="flex h-10 items-center justify-between border-b border-gray-300/30 px-3 shrink-0 bg-white/50 rounded-tl-xl">
                         <span className="text-sm font-semibold text-gray-800 tracking-tight">Filters</span>
                         <button
                           type="button"

@@ -21,14 +21,18 @@ function fetchWithTimeout(
   }).finally(() => clearTimeout(id));
 }
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY"
-  );
+function getRequiredSupabaseEnv() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Missing Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and/or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    );
+  }
+
+  return { supabaseUrl, supabaseAnonKey };
 }
 
 // Server-side Supabase client with service role (for admin operations)
-export const supabaseAdmin = supabaseServiceRoleKey
+export const supabaseAdmin = supabaseServiceRoleKey && supabaseUrl
   ? createClient(supabaseUrl, supabaseServiceRoleKey, {
       auth: {
         autoRefreshToken: false,
@@ -39,9 +43,10 @@ export const supabaseAdmin = supabaseServiceRoleKey
 
 // Server-side client for use in Server Components and Server Actions
 export async function createServerSupabaseClient() {
+  const { supabaseUrl: requiredUrl, supabaseAnonKey: requiredAnonKey } = getRequiredSupabaseEnv();
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl!, supabaseAnonKey!, {
+  return createServerClient(requiredUrl, requiredAnonKey, {
     global: {
       fetch: fetchWithTimeout,
     },
