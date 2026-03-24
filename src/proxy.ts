@@ -69,14 +69,21 @@ export async function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   try {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("[proxy] Missing Supabase environment variables");
+      return response;
+    }
+
     // Create Supabase client for proxy
     // Note: Disable autoRefreshToken in proxy to avoid Edge Runtime fetch failures
     // Token refresh should happen in Server Components/API routes, not proxy
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      supabaseUrl,
+      supabaseAnonKey,
       {
         cookies: {
           getAll() {
