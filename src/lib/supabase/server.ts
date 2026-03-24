@@ -1,25 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { fetchWithTimeout } from "@/lib/supabase/fetch-timeout";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-/** Auth request timeout (ms). Fail fast so UI gets 503 in ~8s instead of 30s+ on network issues. */
-const AUTH_FETCH_TIMEOUT_MS = 8000;
-
-function fetchWithTimeout(
-  input: RequestInfo | URL,
-  init?: RequestInit
-): Promise<Response> {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), AUTH_FETCH_TIMEOUT_MS);
-  return fetch(input, {
-    ...init,
-    signal: controller.signal,
-  }).finally(() => clearTimeout(id));
-}
+export { fetchWithTimeout, AUTH_FETCH_TIMEOUT_MS } from "@/lib/supabase/fetch-timeout";
 
 function getRequiredSupabaseEnv() {
   if (!supabaseUrl || !supabaseAnonKey) {

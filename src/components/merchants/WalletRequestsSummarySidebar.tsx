@@ -74,19 +74,19 @@ export function WalletRequestsSummarySidebar({
   return (
     <Link
       href={href}
-      className="group relative flex w-full cursor-pointer items-center rounded-lg px-2.5 py-2 text-xs font-medium text-gray-900 transition-all duration-200 hover:-translate-x-1 hover:bg-gray-200/80 hover:text-gray-900"
+      className="group relative grid w-full min-w-0 cursor-pointer grid-cols-[1.25rem_minmax(0,1fr)_auto] items-center gap-x-2 rounded-lg px-2 py-2 text-xs font-medium text-gray-900 transition-all duration-200 hover:-translate-x-1 hover:bg-gray-200/80 hover:text-gray-900"
     >
-      <div className="flex items-center gap-2">
-        <Wallet className="h-4 w-4 flex-shrink-0" />
-        <span className="flex-1 truncate text-xs font-medium">Wallet requests</span>
-        {loading ? (
-          <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-400" />
-        ) : (
-          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
-            {badge.pending} Pending
-          </span>
-        )}
-      </div>
+      <span className="flex size-5 items-center justify-center justify-self-start text-current">
+        <Wallet className="h-4 w-4 shrink-0" aria-hidden />
+      </span>
+      <span className="min-w-0 truncate text-left text-xs font-medium">Wallet requests</span>
+      {loading ? (
+        <Loader2 className="h-3.5 w-3.5 shrink-0 justify-self-end animate-spin text-gray-400" aria-hidden />
+      ) : (
+        <span className="shrink-0 justify-self-end rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+          {badge.pending} Pending
+        </span>
+      )}
       <div className="pointer-events-none absolute right-full z-50 mr-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
         {tooltipLabel}
         <div className="absolute right-0 top-1/2 translate-x-1 -translate-y-1/2 border-4 border-transparent border-l-gray-900" />
