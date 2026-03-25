@@ -4,11 +4,17 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# -------------------------
+# Dependencies
+# -------------------------
 FROM base AS deps
-COPY package.json package-lock.json ./
+COPY package.json ./
 COPY packages/contracts/package.json ./packages/contracts/
-RUN npm ci
+RUN npm install
 
+# -------------------------
+# Build
+# -------------------------
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -17,15 +23,20 @@ RUN mkdir -p public
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Build-time envs (IMPORTANT)
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ARG NEXT_PUBLIC_APP_URL
-ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
 RUN npm run build
 
+# -------------------------
+# Production Runner
+# -------------------------
 FROM base AS runner
 ENV NODE_ENV=production
 ENV PORT=3000
