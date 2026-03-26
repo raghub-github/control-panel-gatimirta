@@ -62,6 +62,7 @@ function toResponseCookieOptions(options: {
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const normalizedRedirectPath = pathname === "/" ? "/dashboard" : pathname;
   // Set NEXT_PUBLIC_DEBUG_PROXY=true in .env.local to log [proxy] Path and redirect messages (off by default to reduce console noise).
   const debugProxy = process.env.NEXT_PUBLIC_DEBUG_PROXY === "true";
   if (debugProxy && !pathname.startsWith("/_next") && !pathname.startsWith("/api/audit")) {
@@ -251,13 +252,19 @@ export async function proxy(request: NextRequest) {
       }
       const redirectUrl = request.nextUrl.clone();
       redirectUrl.pathname = "/login";
-      redirectUrl.searchParams.set("redirect", pathname);
+      redirectUrl.searchParams.set("redirect", normalizedRedirectPath);
       return NextResponse.redirect(redirectUrl);
     }
 
     // If Supabase session exists and trying to access login, redirect to dashboard
     if (session && pathname === "/login") {
       if (debugProxy) console.log("[proxy] Session exists, redirecting from login to dashboard");
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    // Avoid hitting app root ("/") runtime manifest path in production.
+    // Route "/" is just a redirect to "/dashboard" anyway.
+    if (session && pathname === "/") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
