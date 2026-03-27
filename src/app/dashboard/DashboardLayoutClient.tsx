@@ -407,6 +407,14 @@ function DashboardLayoutContent({
     }
   }, [cleanPathname, pendingNavHref]);
 
+  // Safety valve: if a navigation click is interrupted (especially on mobile/touch),
+  // never leave the full-page spinner stuck forever.
+  useEffect(() => {
+    if (!pendingNavHref) return;
+    const timer = window.setTimeout(() => setPendingNavHref(null), 8000);
+    return () => window.clearTimeout(timer);
+  }, [pendingNavHref]);
+
   // During sidebar navigation, overlay the outgoing page with an opaque layer so
   // heavy content (e.g. Mapbox on Home) does not show through the spinner.
   const showNavigationSpinner = pendingNavHref !== null;
